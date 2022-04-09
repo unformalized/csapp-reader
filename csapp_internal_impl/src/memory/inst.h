@@ -56,9 +56,9 @@ typedef struct INSTRUCT_STRUCT
 
 typedef void (*handler_t)(uint64_t, uint64_t);
 
-handler_t handler_table[NUM_INST_TYPE] = {
-    &move_reg_reg_handler,
-};
+handler_t handler_table[NUM_INST_TYPE];
+
+void init_handler_table();
 
 void add_reg_reg_handler(uint64_t src, uint64_t dst);
 void move_reg_reg_handler(uint64_t src, uint64_t dst);

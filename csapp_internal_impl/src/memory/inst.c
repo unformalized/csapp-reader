@@ -53,6 +53,12 @@ void inst_cycle()
     handler(src, dst);
 }
 
+void init_handler_table()
+{
+    handler_table[ADD_REG_REG] = &add_reg_reg_handler;
+    handler_table[MOV_REG_REG] = &move_reg_reg_handler;
+}
+
 void add_reg_reg_handler(uint64_t src, uint64_t dst)
 {
     *(uint64_t *)dst = *(uint64_t *)src;
