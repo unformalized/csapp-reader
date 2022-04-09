@@ -9,9 +9,8 @@
 #include <stdint.h>
 #include "memory/inst.h"
 
-#define INST_LEN 100
+#define INST_LEN 15
 
 inst_t program[INST_LEN];
 
-
-#endif //CSAPP_INTERNAL_IMPL_ELF_H
+#endif // CSAPP_INTERNAL_IMPL_ELF_H

@@ -1,15 +1,26 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#ifndef CSAPP_INTERNAL_IMPL_INST_H
+#define CSAPP_INTERNAL_IMPL_INST_H
+
+#define NUM_INST_TYPE 30
+
 typedef enum OP
 {
-    MOV,
-    PUSH,
-    CALL
+    MOV_REG_REG,
+    ADD_REG_REG,
+    MOV_REG_MEM,
+    MOV_MEM_REG,
+    POP_REG,
+    PUSH_REG,
+    CALL,
+    RET,
 } op_t;
 
 typedef enum OD_TYPE
 {
+    EMPTY,
     IMM,
     REG,
     MM_IMM,
@@ -26,13 +37,10 @@ typedef enum OD_TYPE
 typedef struct OD
 {
     od_type_t type;
-
     int64_t imm;
     int64_t scale;
     uint64_t *reg1;
     uint64_t *reg2;
-
-    char code[1000];
 } od_t;
 
 typedef struct INSTRUCT_STRUCT
@@ -40,11 +48,21 @@ typedef struct INSTRUCT_STRUCT
     op_t op;
     od_t src;
     od_t dst;
+    char code[100];
 } inst_t;
 
 // op function
 // typedef
 
+typedef void (*handler_t)(uint64_t, uint64_t);
 
+handler_t handler_table[NUM_INST_TYPE] = {
+    &move_reg_reg_handler,
+};
+
+void add_reg_reg_handler(uint64_t src, uint64_t dst);
+void move_reg_reg_handler(uint64_t src, uint64_t dst);
 
 void inst_cycle();
+
+#endif // CSAPP_INTERNAL_IMPL_INST_H
