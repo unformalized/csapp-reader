@@ -1,8 +1,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#ifndef CSAPP_INTERNAL_IMPL_INST_H
-#define CSAPP_INTERNAL_IMPL_INST_H
+#ifndef INST_H
+#define INST_H
 
 #define NUM_INST_TYPE 30
 
@@ -65,4 +65,4 @@ void move_reg_reg_handler(uint64_t src, uint64_t dst);
 
 void inst_cycle();
 
-#endif // CSAPP_INTERNAL_IMPL_INST_H
+#endif

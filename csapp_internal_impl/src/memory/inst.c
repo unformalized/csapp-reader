@@ -1,4 +1,5 @@
-#include "inst.h"
+#include <stdio.h>
+#include "memory/inst.h"
 #include "cpu/mmu.h"
 #include "cpu/register.h"
 
@@ -53,6 +54,7 @@ void inst_cycle()
 
     handler_t handler = handler_table[instr->op];
     handler(src, dst);
+    printf("    %s\n", instr->code);
 }
 
 void init_handler_table()

@@ -2,7 +2,7 @@
 
 #include "memory/inst.h"
 #include "cpu/register.h"
-#include "elf.h"
+#include "disk/elf.h"
 
 inst_t program[INST_LEN] =
     {

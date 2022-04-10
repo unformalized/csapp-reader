@@ -3,7 +3,7 @@ CFLAGS = -Wall -g -O2 -Werror -std=gnu99
 
 EXE = program
 
-CODE = ./src/disk/code.c ./src/memory/inst.c ./src/memory/dram.c ./src/cpu/mmu.c ./src/main.c
+CODE = ./src/cpu/mmu.c ./src/disk/code.c ./src/memory/dram.c ./src/memory/inst.c ./src/main.c
 
 SRC = ./src
 
