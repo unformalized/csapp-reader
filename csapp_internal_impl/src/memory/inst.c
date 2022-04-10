@@ -7,6 +7,8 @@ static uint64_t decode_od(od_t od)
     uint64_t vaddr = od.imm;
     switch (od.type)
     {
+    case EMPTY:
+        return 0x0;
     case IMM:
         return *((uint64_t *)&od.imm);
     case REG:

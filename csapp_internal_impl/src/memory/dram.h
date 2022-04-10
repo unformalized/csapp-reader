@@ -11,4 +11,7 @@
 
 uint8_t mm[MM_LEN];
 
-#endif //CSAPP_INTERNAL_IMPL_DRAM_H
+uint64_t read64bits_dram(uint64_t paddr);
+void write64bits_dram(uint64_t paddr, uint64_t data);
+
+#endif // CSAPP_INTERNAL_IMPL_DRAM_H

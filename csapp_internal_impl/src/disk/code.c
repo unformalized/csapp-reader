@@ -65,5 +65,4 @@ inst_t program[INST_LEN] =
         {MOV_REG_MEM,
          {REG, 0, 0, (uint64_t *)(&reg.rax), NULL},
          {MM_IMM_REG, -0x8, 0, (uint64_t *)&reg.rbp, NULL},
-         "mov \%rax,-0x(\%rbp)"},
-}
+         "mov \%rax,-0x8(\%rbp)"}};
