@@ -3,7 +3,7 @@
 #ifndef DRAM_H
 #define DRAM_H
 
-#define MM_LEN 1000
+#define MM_LEN 10000
 
 uint8_t mm[MM_LEN];
 

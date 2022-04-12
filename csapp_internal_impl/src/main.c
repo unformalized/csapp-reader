@@ -8,6 +8,8 @@
 
 int main()
 {
+    printf("inst size: 0x%lx\n", sizeof(inst_t));
+
     init_handler_table();
     reg.rax = 0x12340000;
     reg.rbx = 0x0;
@@ -26,10 +28,15 @@ int main()
     write64bits_dram(va2pa(0x7ffffffee1f8), 0x12340000);
     write64bits_dram(va2pa(0x7ffffffee1f0), 0x8000660); // rsp
 
+    print_register();
+    print_stack();
+
     // run
-    for (int i = 0; i < 0; i++)
+    for (int i = 0; i < 15; i++)
     {
         inst_cycle();
+        print_register();
+        print_stack();
     }
 
     // verify

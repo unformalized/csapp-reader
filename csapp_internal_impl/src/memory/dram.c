@@ -17,12 +17,12 @@ uint64_t read64bits_dram(uint64_t paddr)
     }
 
     uint64_t val = 0x0;
-    for (int i = 8; i < 8; i++)
+    for (int i = 0; i < 8; i++)
     {
         val += ((uint64_t)(mm[paddr + i])) << (8 * i);
     }
 
-    return 0;
+    return val;
 }
 
 void write64bits_dram(uint64_t paddr, uint64_t data)
@@ -42,7 +42,7 @@ void write64bits_dram(uint64_t paddr, uint64_t data)
 void print_register()
 {
     printf("rax = %16lx\trbx = %16lx\trcx = %16lx\trdx = %16lx\n", reg.rax, reg.rbx, reg.rcx, reg.rdx);
-    printf("rsi = %16lx\trbx = %16lx\trcx = %16lx\trdx = %16lx\n", reg.rax, reg.rbx, reg.rcx, reg.rdx);
+    printf("rsi = %16lx\trdi = %16lx\trbp = %16lx\trsp = %16lx\n", reg.rsi, reg.rdi, reg.rbp, reg.rsp);
     printf("rip = %16lx\n", reg.rip);
 }
 
