@@ -821,6 +821,13 @@ static void pop_handler(od_t *src_od, od_t *dst_od, core_t *cr)
 
 static void leave_handler(od_t *src_od, od_t *dst_od, core_t *cr)
 {
+    // movq %rbp,%rsp
+    (cr->reg).rsp = cr->reg.rbp;
+    uint64_t old_val = read64bits_dram(va2pa((cr->reg).rsp, cr), cr);
+    (cr->reg).rsp = (cr->reg).rsp + 8;
+    (cr->reg).rbp = old_val;
+    next_rip(cr);
+    reset_cflags(cr);
 }
 
 static void call_handler(od_t *src_od, od_t *dst_od, core_t *cr)
@@ -870,8 +877,8 @@ static void add_handler(od_t *src_od, od_t *dst_od, core_t *cr)
         uint64_t val = *(uint64_t *)dst + *(uint64_t *)src;
 
         int val_sign = (val >> 63) & 0x1;
-        int src_sign = (src >> 63) & 0x1;
-        int dst_sign = (dst >> 63) & 0x1;
+        int src_sign = (*(uint64_t *)src >> 63) & 0x1;
+        int dst_sign = (*(uint64_t *)dst >> 63) & 0x1;
 
         // set condition flags
         cr->flags.CF = val < *(uint64_t *)src;            // unsigned overflow
@@ -897,9 +904,18 @@ static void sub_handler(od_t *src_od, od_t *dst_od, core_t *cr)
     {
         // src: imm
         // dst: register (value: int64_t bit map)
-        uint64_t val = *(uint64_t *)dst + ~src + 1;
+        // dst = dst - src = dst + (-src)
+        uint64_t val = *(uint64_t *)dst + (~src + 1);
 
         // set condition flags
+        int val_sign = (val >> 63) & 0x1;
+        int src_sign = (src >> 63) & 0x1;
+        int dst_sign = (*(uint64_t *)dst >> 63) & 0x1;
+
+        cr->flags.CF = val > *(uint64_t *)dst;                                                                                 // unsigned overflow
+        cr->flags.ZF = (val == 0);                                                                                             // zero flag
+        cr->flags.SF = (val >> 63) & 0x1;                                                                                      // sign flag
+        cr->flags.OF = (src_sign == 1 && dst_sign == 0 && val_sign == 1) || (src_sign == 0 && dst_sign == 1 && val_sign == 0); // signed overflow
 
         // update registers
         *(uint64_t *)dst = val;
@@ -912,14 +928,56 @@ static void sub_handler(od_t *src_od, od_t *dst_od, core_t *cr)
 
 static void cmp_handler(od_t *src_od, od_t *dst_od, core_t *cr)
 {
+    uint64_t src = decode_operand(src_od);
+    uint64_t dst = decode_operand(dst_od);
+
+    if (src_od->type == IMM && dst_od->type == MEM_IMM_REG1)
+    {
+        // src: imm
+        // dst: memory
+        // dst = dst - src = dst + (-src)
+        uint64_t dst_val = read64bits_dram(va2pa(dst, cr), cr);
+        uint64_t val = dst_val + (~src + 1);
+
+        // set condition flags
+        int val_sign = (val >> 63) & 0x1;
+        int src_sign = (src >> 63) & 0x1;
+        int dst_sign = (dst_val >> 63) & 0x1;
+
+        cr->flags.CF = val > dst_val;                                                                                          // unsigned overflow
+        cr->flags.ZF = (val == 0);                                                                                             // zero flag
+        cr->flags.SF = (val >> 63) & 0x1;                                                                                      // sign flag
+        cr->flags.OF = (src_sign == 1 && dst_sign == 0 && val_sign == 1) || (src_sign == 0 && dst_sign == 1 && val_sign == 0); // signed overflow
+
+        // signed and unsigned value follow the same addition. e.g.
+        // 5 = 0000000000000101, 3 = 0000000000000011, -3 = 1111111111111101, 5 + (-3) = 0000000000000010
+        next_rip(cr);
+        return;
+    }
 }
 
 static void jne_handler(od_t *src_od, od_t *dst_od, core_t *cr)
 {
+    uint64_t src = decode_operand(src_od);
+    // src_od->type is actually a instruction memory address
+    // but we interpreting it as an immediate number
+
+    if (cr->flags.ZF == 0)
+    {
+        cr->rip = src;
+    }
+    else
+    {
+        next_rip(cr);
+    }
+    reset_cflags(cr);
 }
 
 static void jmp_handler(od_t *src_od, od_t *dst_od, core_t *cr)
 {
+    uint64_t src = decode_operand(src_od);
+    cr->rip = src;
+    reset_cflags(cr);
 }
 
 // instruction cycle is implemented in CPU
