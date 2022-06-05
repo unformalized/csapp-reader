@@ -3,7 +3,9 @@ CFLAGS = -Wall -g -O2 -Werror -std=gnu99
 
 VPATH = ./src/headers
 
-EXE_HARDWARE = hareware
+
+BIN_HARDWARE = ./.bin/test_hardware
+BIN_LINER = ./.bin/test_link
 
 SRC_DIR = ./src
 
@@ -14,13 +16,23 @@ COMMON = $(SRC_DIR)/common/print.c $(SRC_DIR)/common/convert.c
 CPU =$(SRC_DIR)/hardware/cpu/mmu.c $(SRC_DIR)/hardware/cpu/isa.c
 MEMORY = $(SRC_DIR)/hardware/memory/dram.c
 
-# main
-MAIN_HARDWARE = $(SRC_DIR)/main_hardware.c
+# linker
+LINKER = $(SRC_DIR)/linker/parseElf.c
+
+# test
+TEST_HARDWARE = $(SRC_DIR)/tests/test_hardware.c
+TEST_LINKER = $(SRC_DIR)/tests/test_elf.c
 
 .PHONY:hardware
 hardware:
-	$(CC) $(CFLAGS) -I$(SRC_DIR) $(COMMON) $(CPU) $(MEMORY) $(MAIN_HARDWARE) -o $(EXE_HARDWARE)
+	$(CC) $(CFLAGS) -I$(SRC_DIR) $(COMMON) $(CPU) $(MEMORY) $(TEST_HARDWARE) -o $(BIN_HARDWARE)
 	./$(EXE_HARDWARE)
+
+.PHONY:linker
+linker:
+	$(CC) $(CFLAGS) -I$(SRC_DIR) $(COMMON) $(LINKER) $(TEST_LINKER) -o $(BIN_LINER)
+	./$(BIN_LINER)
+
 clean:
-	rm -f *.o *~ $(EXE_HARDWARE)
+	rm -f *.o *~ $(BIN_HARDWARE) $(BIN_LINER)
 
