@@ -1,9 +1,6 @@
 CC = gcc-9
 CFLAGS = -Wall -g -O2 -Werror -std=gnu99
 
-VPATH = ./src/headers
-
-
 BIN_HARDWARE = ./.bin/test_hardware
 BIN_LINER = ./.bin/test_link
 
@@ -26,7 +23,7 @@ TEST_LINKER = $(SRC_DIR)/tests/test_elf.c
 .PHONY:hardware
 hardware:
 	$(CC) $(CFLAGS) -I$(SRC_DIR) $(COMMON) $(CPU) $(MEMORY) $(TEST_HARDWARE) -o $(BIN_HARDWARE)
-	./$(EXE_HARDWARE)
+	./$(BIN_HARDWARE)
 
 .PHONY:linker
 linker:
