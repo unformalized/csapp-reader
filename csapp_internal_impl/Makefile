@@ -1,4 +1,4 @@
-CC = gcc-9
+CC = clang
 CFLAGS = -Wall -g -O2 -Werror -std=gnu99
 
 BIN_HARDWARE = ./.bin/test_hardware
