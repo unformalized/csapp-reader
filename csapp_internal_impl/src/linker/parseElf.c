@@ -6,6 +6,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * str: column 字符串
+ * ent: 存储 column 数组的指针地址
+ * */
 static int parse_table_entry(char *str, char ***ent) {
     // parse line as table entries
     int count_col = 1;
@@ -16,6 +20,7 @@ static int parse_table_entry(char *str, char ***ent) {
             count_col++;
     }
 
+    // 返回指针地址
     char **arr = malloc(count_col * sizeof(char *));
     *ent = arr;
 
@@ -26,6 +31,7 @@ static int parse_table_entry(char *str, char ***ent) {
     for (int i = 0; i < len + 1; ++i) {
         if (str[i] == ',' || str[i] == '\0') {
             assert(col_index < count_col);
+            // 对每个 column 分配内存复制
             // malloc and copy
             char *col = malloc((col_width + 1) * sizeof(char));
             for (int j = 0; j < col_width; ++j) {
@@ -55,6 +61,8 @@ static void free_table_entry(char **ent, int n) {
 
 // parse section header
 static void parse_sh(char *str, sh_entry_t *sh) {
+    // 对 .text,0x0,4,22 进行解析
+    // 栈地址
     char **cols;
     int col_num = parse_table_entry(str, &cols);
     assert(col_num == 4);
@@ -193,12 +201,14 @@ void parse_elf(char *filename, elf_t *elf) {
     }
 
     int sh_count = string2uint(elf->buffer[1]);
+    // section header count
     elf->sht_count = sh_count;
     elf->sht = malloc(sh_count * sizeof(sh_entry_t));
 
     sh_entry_t *symt_sh = NULL;
 
     for (int i = 0; i < sh_count; ++i) {
+        // 解析 section header
         parse_sh(elf->buffer[2 + i], &(elf->sht[i]));
         print_sh_entry(&(elf->sht[i]));
 
