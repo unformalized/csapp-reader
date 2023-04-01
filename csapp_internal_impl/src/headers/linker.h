@@ -6,8 +6,7 @@
 
 #define MAX_CHAR_SECTION_NAME (32)
 
-typedef struct
-{
+typedef struct {
     char sh_name[MAX_CHAR_SECTION_NAME];
     uint64_t sh_addr;
     uint64_t sh_offset; // line offset or effective line index
@@ -16,22 +15,15 @@ typedef struct
 
 #define MAX_CHAR_SYMBOL_NAME (64)
 
-typedef enum
-{
-    STB_LOCAL,
-    STB_GLOBAL,
-    STB_WEAK
-} st_bind_t;
+typedef enum { STB_LOCAL, STB_GLOBAL, STB_WEAK } st_bind_t;
 
-typedef enum
-{
+typedef enum {
     STT_NOTYPE,
     STT_OBJECT,
     STT_FUNC,
 } st_type_t;
 
-typedef struct
-{
+typedef struct {
     char st_name[MAX_CHAR_SYMBOL_NAME];
     st_bind_t bind;
     st_type_t type;
@@ -43,8 +35,7 @@ typedef struct
 #define MAX_ELF_FILE_LENGTH (64) // max 64 effective lines
 #define MAX_ELF_FILE_WIDTH (128) // max 128 chars per line
 
-typedef struct
-{
+typedef struct {
     char buffer[MAX_ELF_FILE_LENGTH][MAX_ELF_FILE_WIDTH];
     uint64_t line_count;
 
@@ -58,5 +49,7 @@ typedef struct
 void parse_elf(char *filename, elf_t *elf);
 void free_elf(elf_t *elf);
 void link_elf(elf_t **srcs, int num_src, elf_t *dst);
+void print_sh_entry(sh_entry_t *sh);
+void print_symbol_entry(st_entry_t *ste);
 
 #endif

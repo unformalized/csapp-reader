@@ -76,11 +76,6 @@ static void parse_sh(char *str, sh_entry_t *sh) {
     free_table_entry(cols, col_num);
 }
 
-static void print_sh_entry(sh_entry_t *sh) {
-    debug_printf(DEBUG_LINKER, "%s\t%x\t%d\t%d\n", sh->sh_name, sh->sh_addr,
-                 sh->sh_offset, sh->sh_size);
-}
-
 // parse symbol table
 // el: sum,STB_GLOBAL,STT_FUNCTION,.text,0,22
 static void parse_sym_table(char *str, st_entry_t *ste) {
@@ -120,12 +115,6 @@ static void parse_sym_table(char *str, st_entry_t *ste) {
     ste->st_size = string2uint(cols[5]);
 
     free_table_entry(cols, col_num);
-}
-
-static void print_symbol_entry(st_entry_t *ste) {
-    debug_printf(DEBUG_LINKER, "%s\t%d\t%d\t%s\t%d\t%d\n", ste->st_name,
-                 ste->bind, ste->type, ste->st_shndx, ste->st_value,
-                 ste->st_size);
 }
 
 static int read_elf(const char *filename, uint64_t buf_addr) {
